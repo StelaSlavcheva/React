@@ -3,47 +3,25 @@ import * as userService from "../../services/UserService";
 import { useState } from "react";
 import { UserDetails } from "./user-details/UserDetails";
 import { UserItem } from "./user-item/UserItem";
+import { UserEdit } from "./user-edit/UserEdit";
+import { UserActions } from "./UserListConstants";
 
-const UserActions = {
-  Details: "details",
-  Edit: "Edit",
-  Delete: "delete",
-};
+
 
 export const UserList = ({ users }) => {
   const [userAction, setUserAction] = useState({ user: null, action: null });
 
-  const detailsClickHandler = (userId) => {
-    userService.getOne(userId)
-    .then((user) => {
+  const userActionClickHandler = (userId, actionType) => {
+    userService.getOne(userId).then((user) => {
       setUserAction({
         user,
-        action:UserActions.Details
+        action: actionType,
       });
     });
   };
 
-  const editClickHandler = (userId)=>{
-    userService.getOne(userId)
-    .then(user => {
-      setUserAction({
-        user,
-        action: UserActions.Edit
-      });
-    });
-  }
-
-  const deleteClickHandler = (userId)=>{
-    userService.getOne(userId)
-    .then(user => {
-      setUserAction({
-        user,
-        action: UserActions.Delete
-      });
-    });
-  }
-  const detailsCloseHandler = () => {
-    setUserAction({user:null, action:null});
+  const closeHandler = () => {
+    setUserAction({ user: null, action: null });
   };
 
   return (
@@ -51,9 +29,19 @@ export const UserList = ({ users }) => {
       {/* Overlap Components */}
 
       {userAction.action == UserActions.Details && (
-        <UserDetails user={userAction.user} onClose={detailsCloseHandler} />
+        <UserDetails 
+        user={userAction.user} 
+        onClose={closeHandler} 
+        />
       )}
       {/* t.e. UserDetails shte se vidi kogato ima selectedUser */}
+
+      {userAction.action == UserActions.Edit && (
+        <UserEdit 
+        user={userAction.user} 
+        onClose={closeHandler} 
+        />
+      )}
 
       <table className="table">
         <thead>
@@ -155,7 +143,9 @@ export const UserList = ({ users }) => {
         <tbody>
           {users.map((user) => (
             <tr key={user._id}>
-              <UserItem user={user} onDetailsClick={detailsClickHandler} />
+              <UserItem 
+              user={user} 
+              onActionClick={userActionClickHandler} />
             </tr>
           ))}
         </tbody>
