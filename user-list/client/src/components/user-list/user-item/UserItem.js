@@ -1,20 +1,24 @@
-export const UserItem = (props) => {
-    console.log(props);
+export const UserItem = ({
+ user,
+  onDetailsClick,
+}) => {
+  const blankProfileUrl =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHoAAAB6CAMAAABHh7fWAAAAMFBMVEXk5ueutLfn6erCx8mrsbTd4OHHy83Q09XZ3N2zubyorrLKztDW2dq9wsTS1te6v8IQgPDJAAACj0lEQVRoge2Z23KEIAxAIYICXvj/v2287Lbbupi4iU5nOE++nUkCSIIxlUqlUqlUKpVK5b8AACYMQ/DL15Xe0GebknMppTh25io5mN46Z79xLg9XyFH84t3sUV8OQ/wrXuSjctqh3RfrBw7jW/Ms7/Tc8CbZD5KaG3LZrOcuZ3vLuUq9oTs2I15B7Sli3GPyYR8XenNP4u6BZrY2SpshEs24u4XV5KAR2YxDppvdIKo2jKCt6CIn7ulH2KLqhqNOQVLNEGPUvWTYieUeBc2BpxY8VWDilBoRVPc8tRNUv7+R7ZJuVMv9tO+MmnWYydb6vhV+476+8zSj31FmRM/wG/9chrfORG9IwFC7RlZNaHqeatF84/aiq6NwD0C/korfw+lhSwdNr7b0LXyG2GnKLu8VIPU+4s3e6qb8tTU6e0Mpt848g+JO8m39t7v4G3FBdWb3/qrkoleeVPq8e21wrlX1rvLp78zQuVE55M1tpvxzII6fzSXiRQ6+G6Nd/bEZLnsF2OzoR5aPi61hmjpkGoL3V+jR4Lt2xEy/YnPbBa/mn1+X2mztzsvHutbmqmvocVmPcd/64s+dF110GC8muax96tEuJgfoI6vxcbYV2edg2qM872X+89PtlHi1fyiHjlrivcjb8zXHv9Rp8SI//ej2ScgPeXPOzGizCoHzKw7m45BXEjfpEES8i5v34geDmJk53xA1s9yC2d7c9JwLm+ldCW9SRXTTzMxZLA1Sw8+YmjAgLTWFdC8ctr/c+TMZwsO2VtCH4zS1oI/D1thYT8rVlj7HflJe5LzhM5uiWlNsXSnjXjXo4vSU+7LDVBcmidy3Sy65oB5/d6+yFNYZtI0qpUMFlCkss0qlUvmvfAF4AB6Wf0oStQAAAABJRU5ErkJggg==";
 
   return (
-    <tr>
+    <>
       <td>
         <img
-          src={props.imageUrl}
-          alt="Peter's profile"
+          src={user.imageUrl || blankProfileUrl}
+          alt={`${user.firstName} profile`}
           className="image"
         />
       </td>
-      <td>{props.firstName}</td>
-      <td>{props.lastName}</td>
-      <td>{props.email}</td>
-      <td>{props.phoneNumber}</td>
-      <td>{props.createdAt}</td>
+      <td>{user.firstName}</td>
+      <td>{user.lastName}</td>
+      <td>{user.email}</td>
+      <td>{user.phoneNumber}</td>
+      <td>{user.createdAt}</td>
 
       <td className="actions">
         <button className="btn edit-btn" title="Edit">
@@ -51,7 +55,7 @@ export const UserItem = (props) => {
             ></path>
           </svg>
         </button>
-        <button className="btn info-btn" title="Info">
+        <button className="btn info-btn" title="Info" onClick={() => onDetailsClick(user._id)}>
           <svg
             aria-hidden="true"
             focusable="false"
@@ -69,6 +73,6 @@ export const UserItem = (props) => {
           </svg>
         </button>
       </td>
-    </tr>
+    </>
   );
 };

@@ -1,24 +1,21 @@
-import "./App.css";
+import {useState, useEffect} from 'react';
+
+import * as userService from './services/UserService';
+
 import { Footer } from "./components/common/Footer";
 import { Header } from "./components/common/Header";
 import { Search } from "./components/search/Search";
 import { UserList} from "./components/user-list/UserList";
-import {useState, useEffect} from 'react';
-
-const baseUrl = 'http://localhost:3005/api'
+import "./App.css";
 
 function App() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-      fetch (`${baseUrl}/users`)
-      .then(response => response.json())
-      .then(result =>{
-        setUsers(result.users);
-      })
+      userService.getAll()
+      .then(users => setUsers(users));
   }, []);
 
-  console.log(users);
 
   return (
     <div className="App">
