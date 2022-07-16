@@ -1,6 +1,6 @@
 import * as userService from "../../services/UserService";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserDetails } from "./user-details/UserDetails";
 import { UserItem } from "./user-item/UserItem";
 import { UserCreate } from "./user-create/UserCreate";
@@ -8,8 +8,13 @@ import { UserEdit } from "./user-edit/UserEdit";
 import { UserDelete } from "./user-delete/UserDelete";
 import { UserActions } from "./UserListConstants";
 
-export const UserList = ({ users }) => {
+export const UserList = () => {
+  const [users, setUsers] = useState([]);
   const [userAction, setUserAction] = useState({ user: null, action: null });
+
+  useEffect(() => {
+    userService.getAll().then((users) => setUsers(users));
+  }, []);
 
   const userActionClickHandler = (userId, actionType) => {
     userService.getOne(userId).then((user) => {
@@ -28,14 +33,8 @@ export const UserList = ({ users }) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    const {
-      firstName,
-      lastName,
-      email,
-      imageUrl,
-      phoneNumber,
-      ...address
-    } = Object.fromEntries(formData);
+    const { firstName, lastName, email, imageUrl, phoneNumber, ...address } =
+      Object.fromEntries(formData);
 
     const userData = {
       firstName,
@@ -44,15 +43,36 @@ export const UserList = ({ users }) => {
       imageUrl,
       phoneNumber,
       address,
-    }
+    };
 
-    userService.create(userData)
-    .then(user => {
-      
+    userService.create(userData).then((user) => {
+      setUsers((state) => [...state, user]);
       closeHandler();
-    })
+    });
+  };
 
-    }
+  const userEditHandler = (userId, e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    
+    const { firstName, lastName, email, imageUrl, phoneNumber, ...address } =
+      Object.fromEntries(formData);
+
+    const userData = {
+      firstName,
+      lastName,
+      email,
+      imageUrl,
+      phoneNumber,
+      address,
+    };
+
+    userService.edit(userData, userId).then((user) => {
+      setUsers((state) => [...state, user]);
+      closeHandler();
+    });
+  };
 
   return (
     <>
@@ -69,7 +89,11 @@ export const UserList = ({ users }) => {
         )}
 
         {userAction.action === UserActions.Edit && (
-          <UserEdit user={userAction.user} onClose={closeHandler} />
+          <UserEdit
+            user={userAction.user}
+            onUserEdit={userEditHandler}
+            onClose={closeHandler}
+          />
         )}
 
         {userAction.action === UserActions.Delete && (
